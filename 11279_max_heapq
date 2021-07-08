@@ -1,0 +1,15 @@
+import heapq
+import sys
+#입력
+t = int(input())
+li = []
+#최대 힙
+for i in range(t):
+  x = int(sys.stdin.readline()) #빠른 입력 사용
+  if x > 0: #자연수 x넣기
+    heapq.heappush(li,(-x,x))
+  else: #가장 큰값 출력, 그 값을 배열에서 제거
+    if len(li) == 0:
+      print(0)
+    else:
+      print(heapq.heappop(li)[1])
