@@ -1,0 +1,17 @@
+import sys
+import heapq
+
+#입력
+t = int(input())
+heap = []
+for i in range(t):
+  x = int(sys.stdin.readline()) #빠른 입력
+  #x = int(input())
+  if abs(x) >= 1:
+    y = abs(x)
+    heapq.heappush(heap,(y,x)) #튜플로 절대값, 원래 수 구성
+  else:
+    if len(heap) == 0:
+      print(0)
+    else:
+      print(heapq.heappop(heap)[1]) #원래수를 뽑음
