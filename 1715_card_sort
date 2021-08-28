@@ -1,0 +1,30 @@
+import sys
+import heapq
+#입력
+n = int(input())
+p = []
+for i in range(n):
+  x = int(input())
+  p.append(x)
+
+#예외처리(한묶음은 안해도됨)
+if len(p) == 1:
+  print(0)
+  sys.exit(0)
+
+#정렬
+p.sort()
+
+#힙으로 변환
+heapq.heapify(p)
+total = 0
+#최소 비교 횟수(앞에서 부터 차례대로 더해감)
+while len(p)>=2:
+  #앞 2개 제거후 앞 2개를 합한값 삽입(크기순)
+  compare = heapq.heappop(p)
+  compare2 = heapq.heappop(p)
+  total += (compare+compare2)
+  heapq.heappush(p,compare+compare2)
+
+#출력
+print(total)
