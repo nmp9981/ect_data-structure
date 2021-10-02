@@ -1,0 +1,78 @@
+#include <iostream>
+#include <cstring>
+#include <cmath>
+#include <cctype>
+#include <algorithm>
+#include <vector>
+#include <chrono>
+#include <stack>
+#include <queue>
+#include <deque>
+#include <utility>
+
+using namespace std;//이름공간 선언
+using namespace chrono;
+
+int n,m;
+int map[201][201];//지도
+int parent[201];//각 도시의 루트노드
+int plan[1000];//계획한 도시
+
+//루트노드 기
+int find(int x){
+    if(x==parent[x]){//x가 루트 노드
+        return x;
+    }
+    parent[x] = find(parent[x]);
+    return parent[x];
+}
+
+//합치기
+void merge(int x,int y){
+    int a = find(x);
+    int b = find(y);
+    if(a==b){//루트노드가 같다면
+        return;
+    }else{
+        parent[b] = a;
+    }
+}
+
+int main()
+{
+    cin.tie(0);
+    cout.tie(0);
+    
+    //입력
+    cin>>n;//도시의 수
+    cin>>m;//계획 도시의 수
+    
+    //초기화
+    for(int i=0;i<=n;i++){
+        parent[i] = i;
+    }
+    
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=n;j++){
+            cin>>map[i][j];
+            //양방향이므로 한쪽만
+            if(map[i][j]==1 && i<j){//도시 연결
+                merge(i,j);
+            }
+        }
+    }
+    
+    //계획한 도시들의 루트노드가 모두 같으면 가능한 여행
+    for(int i=0;i<m;i++){
+        cin>>plan[i];
+    }
+    int result = find(plan[0]);//첫도시의 루트노드
+    for(int i=1;i<m;i++){
+        if(result!=find(plan[i])){//1개라도 다르면 불가능
+            cout<<"NO";
+            return 0;
+        }
+    }
+    cout<<"YES";
+    return 0;
+}
