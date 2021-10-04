@@ -1,0 +1,94 @@
+#include <iostream>
+#include <cstring>
+#include <cmath>
+#include <cctype>
+#include <algorithm>
+#include <vector>
+#include <chrono>
+#include <stack>
+#include <queue>
+#include <deque>
+#include <utility>
+
+using namespace std;//이름공간 선언
+using namespace chrono;
+int n,m,k,root;
+int parent[10001];//루트 노드 구하기
+int pay[10001];//친구비
+int root_node[10001];//루트 노드 판별
+int cheap[10001];//각 집합에서 가장 싼 값
+
+//초기화
+void init(){
+    for(int i=1;i<=n;i++){
+        parent[i] = i;
+        cheap[i] = pay[i];
+        root_node[i] = 0;
+    }
+}
+
+//루트 노드 찾기
+int find(int x){
+    if(parent[x]==x){
+        return x;
+    }
+    parent[x] = find(parent[x]);
+    return parent[x];
+}
+
+//합치기
+void merge(int x, int y){
+    x = find(x);
+    y = find(y);
+    if(x==y){
+        return;
+    }else{
+        //친구비가 더 싼것
+        if(pay[x]<pay[y]){
+            parent[y] = x;//x가 루트
+        }else{
+            parent[x] = y;//y가 루트
+        }
+        //cheap[y] = min(pay[x],pay[y]);
+        //parent[x] = y;//y가 루트
+    }
+}
+
+int main(){
+    cin.tie(0);
+    cout.tie(0);
+
+    //입력
+    cin>>n>>m>>k;
+    for(int i=1;i<=n;i++){
+        cin>>pay[i];//친구비 입력
+    }
+    init();//초기화
+    for(int i=0;i<m;i++){
+        int a,b;
+        cin>>a>>b;
+        merge(a,b);//합치기
+    }
+    
+    //루트노드 모두 찾기
+    int total = 0;
+    for(int i=1;i<=n;i++){
+        int root = find(i);//루트노드
+        //새로운 집합 여부
+        if(root_node[root]==0){
+            root_node[root]=1;//표시
+            total+=cheap[root];//친구비 추가
+            //merge(0,i);
+        }else{
+            continue;
+        }
+    }
+    
+    //결과
+    if(total<=k){//돈이 충분할 경우
+        cout<<total;
+    }else{
+        cout<<"Oh no";
+    }
+    return 0;
+}
