@@ -1,0 +1,53 @@
+#include <string>
+#include <cstring>
+#include <algorithm>
+#include <stack>
+#include <set>
+using namespace std;
+
+stack<int> s;//삭제된 페이지
+set<int> table;//페이지
+set<int>::iterator cs;
+
+//메인 함수
+string solution(int n, int k, vector<string> cmd) {
+    //초기화
+    string answer(n,'X');
+    for(int i=0;i<n;i++){
+        table.insert(i);
+    }
+    
+    cs = table.find(k);//초기 커서 위치
+    //명령어 탐색
+    for(int i=0;i<cmd.size();i++){
+        if(cmd[i]=="C"){//삭제
+            s.push(*cs);//삭제한 페이지는 스택에 보관
+            cs = table.erase(cs);//삭제
+            if(cs==table.end()){//맨 마지막 원소
+                cs--;
+            }
+        }else if(cmd[i]=="Z"){//복구
+            table.insert(s.top());//복구완료
+            s.pop();
+        }else{//커서 이동
+            int d = stoi(cmd[i].substr(2,cmd[i].size()));//변위
+            if(cmd[i][0]=='D'){//아래로
+                while(d>0){
+                    d--;
+                    cs++;
+                }
+            }else if(cmd[i][0]=='U'){//위로
+                while(d>0){
+                    d--;
+                    cs--;
+                }
+            }
+        }
+    }
+    
+    //삭제되지 않은 행 
+    for(int i:table){
+        answer[i]='O';
+    }
+    return answer;
+}
