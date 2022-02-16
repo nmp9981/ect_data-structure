@@ -1,0 +1,68 @@
+#include <iostream>
+#include <cstring>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+const int trie_size = 26;//트라이 문자열 종류 개수
+//트라이 구조체
+struct Trie{
+    bool finish;//끝나는 지점인가?
+    Trie* next[trie_size];//trie_size개 문자에 대한 트라이
+    //생성자
+    Trie() : finish(false){
+        memset(next,0,sizeof(next));
+    }
+    //소멸자
+    ~Trie(){
+        for(int i=0;i<trie_size;i++){
+            if(next[i]){
+                delete next[i];
+            }
+        }
+    }
+    //삽입
+    void insert(const char* key){
+        if(*key == '\0'){//문자열이 끝나는 지점이면
+            finish = true;
+        }else{
+            int cur = *key-'A';//다음 문자열
+            if(next[cur]==NULL){//다음 노드가 없는가?
+                next[cur] = new Trie();//트리 생성
+            }
+            next[cur] -> insert(key+1);//다음문자 삽입
+        }
+    }
+    //찾기
+    Trie* find(const char* key){
+        if(*key=='\0'){//문자열이 끝나는 지점이면
+            return this;//문자열이 끝나는 위치를 반환
+        }
+        int cur = *key-'A';//다음 문자열
+        if(next[cur]==NULL){//다음 노드가 없는가?
+            return NULL;//찾는값이 없음
+        }
+        return next[cur] -> find(key+1);//다음문자 탐색
+    }
+};
+
+int main(){
+    //빠른 입출력
+    ios::sync_with_stdio(false);
+    cin.tie(0);cout.tie(0);
+    
+    Trie* trie = new Trie();//트라이 생성
+    //입력
+    trie->insert("AAHR");
+    trie->insert("AAPA");
+    trie->insert("ABK");
+    trie->insert("TAX");
+    
+    //출력
+    cout<<trie->find("AAPA")<<"\n";
+    cout<<trie->find("ABK")<<"\n";
+    cout<<trie->find("AA")<<"\n";
+    cout<<trie->find("MAPLE")<<"\n";
+    cout<<trie->find("DARKKNIGHT")<<"\n";
+    return 0;
+}
